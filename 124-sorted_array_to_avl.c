@@ -43,5 +43,5 @@ avl_t *sorted_array_to_avl(int *array, size_t size)
 	 * 	return (NULL);
 	 * return (_sorted_array_to_avl(array, 0, size - 1, NULL));
 	 */
-	return (avl_t *);
+	return (NULL);
 }
