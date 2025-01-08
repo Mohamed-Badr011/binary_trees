@@ -1,106 +1,60 @@
 #include "binary_trees.h"
-#include "10-binary_tree_depth.c"
-
-void insert_to_queue(queue_t **queue, const binary_tree_t *node);
-void binary_tree_traverse(const binary_tree_t *tree, queue_t **queue);
-void free_queue(queue_t *head);
 
 /**
- * binary_tree_levelorder - go through tree using level-order traversal
+ * binary_tree_height - measures the height of a binary tree
+ * @tree: pointer to the root node of the tree to measure the height of
+ *
+ * Return: the height of the tree. If tree is NULL, return 0
+ */
+size_t binary_tree_height(const binary_tree_t *tree)
+{
+	size_t left, right;
+
+	if (tree == NULL)
+		return (0);
+	left = binary_tree_height(tree->left);
+	right = binary_tree_height(tree->right);
+	if (left >= right)
+		return (1 + left);
+	return (1 + right);
+}
+
+/**
+ * binary_tree_level - perform a function on a specific level of a binary tree
+ * @tree: pointer to the root of the tree
+ * @l: level of the tree to perform a function on
+ * @func: function to perform
+ *
+ * Return: void
+ */
+void binary_tree_level(const binary_tree_t *tree, size_t l, void (*func)(int))
+{
+	if (tree == NULL)
+		return;
+	if (l == 1)
+		func(tree->n);
+	else if (l > 1)
+	{
+		binary_tree_level(tree->left, l - 1, func);
+		binary_tree_level(tree->right, l - 1, func);
+	}
+}
+
+/**
+ * binary_tree_levelorder - traverses a binary tree using level-order traversal
  * @tree: pointer to the root node of the tree to traverse
- * @func: pointer to a function to call for each node
-*/
+ * @func: pointer to a function to call for each node.
+ * The value in the node must be passed as a parameter to this function
+ *
+ * Return: void
+ */
 void binary_tree_levelorder(const binary_tree_t *tree, void (*func)(int))
 {
-	queue_t **head, *tmp;
+	size_t height, i;
 
-	if (!tree || !func)
+	if (tree == NULL || func == NULL)
 		return;
-	head = malloc(sizeof(queue_t *));
-	*head = NULL;
-	binary_tree_traverse(tree, head);
-	tmp = *head;
-	while (tmp)
-	{
-		func(tmp->node->n);
-		tmp = tmp->next;
-	}
-	free_queue(*head);
-	free(head);
-}
-
-
-/**
- * insert_to_queue - insert to queue
- * @queue: the queue to add to it
- * @node: the node to be added
-*/
-void insert_to_queue(queue_t **queue, const binary_tree_t *node)
-{
-	size_t depth;
-	queue_t *new_queue_node;
-	queue_t *head, *tmp;
-
-	if (node || queue)
-	{
-		depth = binary_tree_depth(node);
-		new_queue_node = malloc(sizeof(queue_t));
-		new_queue_node->node = (binary_tree_t *)node;
-		new_queue_node->depth = depth;
-		if (!*queue)
-		{
-			new_queue_node->next = NULL;
-			*queue = new_queue_node;
-			return;
-		}
-		head = *queue;
-		while (head)
-		{
-			if (!head->next || head->next->depth > depth)
-			{
-				tmp = head->next;
-				head->next = new_queue_node;
-				new_queue_node->next = tmp;
-				return;
-			}
-			head = head->next;
-		}
-	}
-}
-
-
-/**
- * binary_tree_traverse - go throw tree and add to queue
- * @queue: the queue to add to it
- * @tree: the tree to traverse
-*/
-void binary_tree_traverse(const binary_tree_t *tree, queue_t **queue)
-{
-	if (!tree)
-		return;
-
-	insert_to_queue(queue, tree);
-
-	if (tree->left)
-		binary_tree_traverse(tree->left, queue);
-
-	if (tree->right)
-		binary_tree_traverse(tree->right, queue);
-}
-
-
-/**
- * free_queue - free the queue
- * @head: the head of the queue
-*/
-void free_queue(queue_t *head)
-{
-	queue_t *tmp;
-
-	while (head)
-	{
-		tmp = head->next;
-		free(head);
-		head = tmp;
-	}
+	height = binary_tree_height(tree);
+	for (i = 1; i <= height; i++)
+		binary_tree_level(tree, i, func);
 }
