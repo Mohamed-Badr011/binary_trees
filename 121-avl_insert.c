@@ -96,10 +96,10 @@ avl_t *avl_insert_recursive(avl_t **tree, avl_t *parent,
  */
 avl_t *avl_insert(avl_t **tree, int value)
 {
-	(void)tree;
-	(void)value;
 	avl_t *new = NULL;
 
+	(void)tree;
+	(void)value;
 	/*
 	* if (tree == NULL)
 	* 	return (NULL);

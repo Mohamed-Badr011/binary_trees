@@ -9,11 +9,11 @@
  */
 avl_t *array_to_avl(int *array, size_t size)
 {
-	(void)array;
-	(void)size;
 	avl_t *tree = NULL;
 	/* size_t i, j; */
 
+	(void)array;
+	(void)size;
 	/*
 	 * if (array == NULL)
 	 * 	return (NULL);
